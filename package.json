@@ -1,0 +1,45 @@
+{
+  "name": "perfect-cards-list",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "stats": "vite build --mode=stats"
+  },
+  "dependencies": {
+    "click-outside-vue3": "^4.0.1",
+    "gsap": "^3.12.5",
+    "lodash.throttle": "^4.1.1",
+    "rollup-plugin-visualizer": "^5.12.0",
+    "typograf": "^7.3.0",
+    "v-lazy-component": "^3.0.9",
+    "vanilla-tilt": "^1.8.1",
+    "vue": "^3.4.19"
+  },
+  "browsersList": [
+    "cover 99%"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "autoprefixer": "^10.4.17",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-cypress": "^2.15.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-vue": "^9.21.1",
+    "postcss": "^8.4.35",
+    "sass": "^1.70.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.1"
+  }
+}
