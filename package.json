@@ -10,7 +10,6 @@
     "stats": "vite build --mode=stats"
   },
   "dependencies": {
-    "click-outside-vue3": "^4.0.1",
     "gsap": "^3.12.5",
     "lodash.throttle": "^4.1.1",
     "rollup-plugin-visualizer": "^5.12.0",
@@ -23,6 +22,7 @@
     "cover 99%"
   ],
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^20.11.17",
     "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.17",
