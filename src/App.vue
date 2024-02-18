@@ -40,13 +40,13 @@ const getFilterOptions = () => {
 
   allVehicles.value.forEach((vehicle: Vehicle) => {
     vehiclePropertiesMaps[FilterType.LEVEL].add(vehicle.level);
-    vehiclePropertiesMaps[FilterType.TYPE].add(vehicle.type.name);
-    vehiclePropertiesMaps[FilterType.NATION].add(vehicle.nation.name);
+    vehiclePropertiesMaps[FilterType.NATION].add(JSON.stringify(vehicle.nation));
+    vehiclePropertiesMaps[FilterType.TYPE].add(JSON.stringify(vehicle.type));
   });
 
   filters.value = Object.entries(vehiclePropertiesMaps).map(([type, values]) => ({
     type,
-    values: Array.from(values),
+    data: Array.from(values),
   }));
 };
 
@@ -57,16 +57,14 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss">
-@import '@/assets/scss/main.scss';
-@import "@/assets/scss/responsive.scss";
-
 .app {
   position: relative;
   height: 100%;
-  max-height: 100vh;
-  max-width: 100vw;
+  max-width: 144rem;
+  margin: 0 auto;
   min-height: 100vh;
   width: 100vw;
+  padding: 1rem 4rem;
   overflow: hidden;
 
   ::-webkit-scrollbar {
@@ -98,6 +96,13 @@ onBeforeMount(async () => {
       -webkit-border-radius: .5rem;
       border-radius: .5rem;
     }
+  }
+
+  &__title {
+    text-transform: uppercase;
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-top: 2rem;
   }
 }
 </style>

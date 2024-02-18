@@ -4,17 +4,14 @@ export enum FilterType {
   TYPE = 'type',
 }
 
+export type FilterOption = string | number;
+
+export interface FilterValue {
+  name: FilterOption;
+  icon: string | null;
+}
+
 export interface Filter {
-  [FilterType.NATION]: {
-    type: string;
-    value: string[];
-  };
-  [FilterType.LEVEL]: {
-    type: string;
-    value: number[];
-  };
-  [FilterType.TYPE]: {
-    type: string;
-    value: string[];
-  };
+  type: FilterType;
+  data: FilterOption;
 }

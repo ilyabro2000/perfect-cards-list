@@ -1,27 +1,34 @@
+export interface VehicleTypeData {
+  name: string,
+  title: string,
+  icons: {
+    default: string,
+  }
+}
+
+export interface VehicleNationIcon {
+  small: string,
+  medium: string,
+  large: string,
+}
+
+export interface VehicleTypeIcon {
+  default: string,
+}
+
+export interface VehicleNationData {
+  name: string,
+  title: string,
+  color: string,
+  icons: VehicleNationIcon,
+}
+
 export interface Vehicle {
   title: string,
   description: string,
   level: number,
   id: number,
-  icons: {
-    large: string,
-    medium: string,
-  },
-  type: {
-    name: string,
-    title: string,
-    icons: {
-      default: string,
-    },
-  },
-  nation: {
-    name: string,
-    title: string,
-    color: string,
-    icons: {
-      small: string,
-      medium: string,
-      large: string,
-    },
-  },
+  icons: VehicleTypeIcon,
+  type: VehicleTypeData,
+  nation: VehicleNationData,
 }
