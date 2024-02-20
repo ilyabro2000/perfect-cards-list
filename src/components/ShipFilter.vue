@@ -5,7 +5,15 @@
         {{ label }}
       </div>
 
-      <div class="ship-filter__values">
+      <ArrowTop
+        v-if="isOpened"
+        class="ship-filter__arrow"
+      />
+
+      <div
+        v-else
+        class="ship-filter__values"
+      >
         <template v-if="isNumber">
           <p
             v-for="value in values"
@@ -28,21 +36,26 @@
       </div>
     </div>
 
-    <ul
-      v-show="isOpened"
-      class="ship-filter__selector"
-    >
-      <FilterOption
-        v-for="option in optionsData"
-        :key="option.name"
-        :value="option.name"
-        :color="option.color ?? null"
-        :icon="option.icons ?? null"
-        @select="handleFilterSelect"
+    <transition name="fade">
+      <ul
+        v-if="isOpened"
+        class="ship-filter__selector"
       >
-        {{ option.name }}
-      </FilterOption>
-    </ul>
+        <FilterOption
+          v-for="(option, index) in optionsData"
+          :key="option.name"
+          :value="option.name"
+          :index="index"
+          :color="option.color ?? null"
+          :icon="option.icons ?? null"
+          :is-selected="isOptionSelected(option.name)"
+          class="ship-filter__option"
+          @select="handleFilterSelect"
+        >
+          {{ option.name }}
+        </FilterOption>
+      </ul>
+    </transition>
   </div>
 </template>
 
@@ -50,6 +63,7 @@
 import { FilterOption as FilterOptionType, FilterType, FilterValue } from '@/types/Filter';
 import { computed, ref } from 'vue';
 import FilterOption from '@/components/FilterOption.vue';
+import ArrowTop from '@/components/icons/ArrowTop.vue';
 
 const props = defineProps<{
   label: FilterType;
@@ -95,6 +109,10 @@ const optionsData = computed(() => {
   });
 });
 
+const isOptionSelected = (option: FilterOptionType) => (
+  values.value.findIndex((value) => value?.name === option) > -1
+);
+
 const handleFilterSelect = (value: FilterValue) => {
   const isAlreadySelected = values.value.find((filterValue) => filterValue.name === value.name);
 
@@ -111,7 +129,6 @@ const handleFilterSelect = (value: FilterValue) => {
 .ship-filter {
   width: 100%;
   overflow-x: hidden;
-  height: 100%;
 
   &__top {
     display: flex;
@@ -132,10 +149,12 @@ const handleFilterSelect = (value: FilterValue) => {
   &__selector {
     display: flex;
     flex-direction: column;
+    gap: .1rem;
     width: 100%;
-    height: 3.2rem;
     padding: 0 1.2rem;
     margin-top: 1rem;
+    transition-duration: .12s;
+    margin-bottom: 1.6rem;
   }
 
   &__label {
@@ -146,7 +165,7 @@ const handleFilterSelect = (value: FilterValue) => {
   }
 
   &--is-active {
-    .ship-filter__label {
+    .ship-filter__top {
       background-color: transparent;
     }
   }
@@ -160,6 +179,12 @@ const handleFilterSelect = (value: FilterValue) => {
   &__value-number {
     font-size: 1rem;
     font-weight: 700;
+  }
+
+  &__arrow {
+    width: 1.6rem;
+    height: auto;
+    color: $color-white;
   }
 }
 </style>
