@@ -4,56 +4,18 @@
       Shipopedia
     </h1>
 
-    <ShipFilters
-      :filters="filters"
-      class="app__filters"
-    />
+    <ShipFilters class="app__filters" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  computed, onBeforeMount, ref,
-} from 'vue';
-import observeWindowSize from '@/utils/observeWindowSize';
-import { getVehicle } from '@/services/api';
-import { Vehicle } from '@/types/Vehicle';
-import { Filter, FilterType } from '@/types/Filter';
 import ShipFilters from '@/components/ShipFilters.vue';
+import { useMainStore } from '@/store/main';
 
-const windowWidth = ref<number>(window.innerWidth);
-const allVehicles = ref<Vehicle[]>([]);
-const filters = ref<Filter[]>([]);
+const mainStore = useMainStore();
 
-const isMobile = computed(() => windowWidth.value <= 768);
-
-observeWindowSize(({ width }: { width: number }) => {
-  windowWidth.value = width;
-});
-
-const getFilterOptions = () => {
-  const vehiclePropertiesMaps = {
-    [FilterType.LEVEL]: new Set<number>(),
-    [FilterType.TYPE]: new Set<string>(),
-    [FilterType.NATION]: new Set<string>(),
-  };
-
-  allVehicles.value.forEach((vehicle: Vehicle) => {
-    vehiclePropertiesMaps[FilterType.LEVEL].add(vehicle.level);
-    vehiclePropertiesMaps[FilterType.NATION].add(JSON.stringify(vehicle.nation));
-    vehiclePropertiesMaps[FilterType.TYPE].add(JSON.stringify(vehicle.type));
-  });
-
-  filters.value = Object.entries(vehiclePropertiesMaps).map(([type, values]) => ({
-    type,
-    data: Array.from(values),
-  }));
-};
-
-onBeforeMount(async () => {
-  allVehicles.value = await getVehicle();
-  getFilterOptions();
-});
+mainStore.observeWindowSize();
+mainStore.setAllVehicles();
 </script>
 
 <style lang="scss">

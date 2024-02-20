@@ -12,6 +12,6 @@ export interface FilterValue {
 }
 
 export interface Filter {
-  type: FilterType;
-  data: FilterOption;
+  options: FilterOption[];
+  values: FilterValue[];
 }

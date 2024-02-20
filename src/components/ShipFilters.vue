@@ -3,13 +3,14 @@
     :class="shipFiltersCLassList"
     @mouseenter="handleFilterMouseEnter"
     @mouseleave="handleFilterMouseLeave"
+    @click="handleFilterClick"
   >
     <div class="ship-filters__main">
       <ShipFilter
-        v-for="filter in filters"
-        :key="filter.type"
-        :label="filter.type"
-        :data="filter.data"
+        v-for="[label, filter] in Object.entries(filtersState)"
+        :key="label"
+        :label="label"
+        :options="filter.options"
         class="ship-filters__item"
         :is-opened="isFiltersOpened"
       />
@@ -27,6 +28,7 @@
         v-show="isFiltersOpened"
         type="button"
         class="ship-filters__bottom-bar-button"
+        @click="handleResetButtonClick"
       >
         <CLoseIcon class="ship-filters__bottom-bar-button-icon" />
         Reset
@@ -36,14 +38,22 @@
 </template>
 
 <script setup lang="ts">
-import { Filter } from '@/types/Filter';
+import { FilterType } from '@/types/Filter';
 import ShipFilter from '@/components/ShipFilter.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import CLoseIcon from '@/components/icons/CLoseIcon.vue';
+import { useMainStore } from '@/store/main';
+import { storeToRefs } from 'pinia';
+import { Vehicle } from '@/types/Vehicle';
 
-defineProps<{
-  filters: Filter[];
-}>();
+const mainStore = useMainStore();
+const {
+  vehicleList,
+  isLoaded,
+  filtersState,
+} = storeToRefs(mainStore);
+
+const { isMobile } = storeToRefs(mainStore);
 
 const isFiltersOpened = ref<boolean>(false);
 const bottomBarEl = ref<HTMLElement | null>(null);
@@ -53,18 +63,51 @@ const shipFiltersCLassList = computed(() => [
   { 'ship-filters--is-active': isFiltersOpened.value },
 ]);
 
-//
-// const handleFilterClick = () => {
-//   isFilterOpened.value = !isFilterOpened.value;
-// };
+const handleFilterClick = () => {
+  if (!isMobile.value) return;
+
+  isFiltersOpened.value = !isFiltersOpened.value;
+};
 
 const handleFilterMouseEnter = () => {
+  if (isMobile.value) return;
+
   isFiltersOpened.value = true;
 };
 
 const handleFilterMouseLeave = () => {
+  if (isMobile.value) return;
+
   isFiltersOpened.value = false;
 };
+
+const initFilterOptions = () => {
+  const vehiclePropertiesMaps = {
+    [FilterType.LEVEL]: new Set<number>(),
+    [FilterType.TYPE]: new Set<string>(),
+    [FilterType.NATION]: new Set<string>(),
+  };
+
+  vehicleList.value.forEach((vehicle: Vehicle) => {
+    vehiclePropertiesMaps[FilterType.LEVEL].add(vehicle.level);
+    vehiclePropertiesMaps[FilterType.NATION].add(JSON.stringify(vehicle.nation));
+    vehiclePropertiesMaps[FilterType.TYPE].add(JSON.stringify(vehicle.type));
+  });
+
+  Object.entries(vehiclePropertiesMaps).forEach(([type, values]) => {
+    filtersState.value[type].options = Array.from(values);
+  });
+};
+
+const handleResetButtonClick = () => {
+  Object.keys(filtersState.value).forEach((key) => {
+    filtersState.value[key].values = [];
+  });
+};
+
+watch(isLoaded, () => {
+  initFilterOptions();
+});
 </script>
 
 <style lang="scss" scoped>

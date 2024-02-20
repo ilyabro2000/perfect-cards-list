@@ -14,7 +14,7 @@ const request = async (query: string) => {
   return result.json();
 };
 
-const getVehicle = async () => {
+const getVehicles = async () => {
   try {
     const result = await request(`
           query Vehicles {
@@ -56,5 +56,5 @@ const getVehicle = async () => {
 };
 
 export {
-  getVehicle,
+  getVehicles,
 };

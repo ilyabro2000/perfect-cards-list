@@ -61,27 +61,37 @@
 
 <script setup lang="ts">
 import { FilterOption as FilterOptionType, FilterType, FilterValue } from '@/types/Filter';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import FilterOption from '@/components/FilterOption.vue';
 import ArrowTop from '@/components/icons/ArrowTop.vue';
+import { useMainStore } from '@/store/main';
+import { storeToRefs } from 'pinia';
+
+const mainStore = useMainStore();
+const { filtersState } = storeToRefs(mainStore);
 
 const props = defineProps<{
   label: FilterType;
-  data: FilterOptionType[];
+  options: FilterOptionType[];
   isOpened: boolean;
 }>();
 
-const values = ref<FilterValue[]>([]);
+const values = computed({
+  get: () => filtersState.value[props.label].values,
+  set: () => {
+    filtersState.value[props.label].values = values.value;
+  },
+});
 
 const shipFilterClassList = computed(() => [
   'ship-filter',
   { 'ship-filter--is-active': props.isOpened },
 ]);
 
-const isNumber = computed(() => values.value.every((item) => typeof item.name === 'number'));
+const isNumber = computed(() => values.value?.every((item) => typeof item.name === 'number'));
 
 const optionsData = computed(() => {
-  const unSortedOptionsData = props.data.map((item: FilterOptionType) => {
+  const unSortedOptionsData = props.options.map((item: FilterOptionType) => {
     if (typeof item === 'number') {
       return {
         name: item,
