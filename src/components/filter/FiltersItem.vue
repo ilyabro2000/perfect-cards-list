@@ -5,32 +5,32 @@
     @mouseleave="handleFilterMouseLeave"
     @click="handleFilterClick"
   >
-    <div class="ship-filters__main">
+    <div class="filters-item__main">
       <ShipFilter
         v-for="[label, filter] in Object.entries(filtersState)"
         :key="label"
         :label="label"
         :options="filter.options"
-        class="ship-filters__item"
+        class="filters-item__item"
         :is-opened="isFiltersOpened"
       />
     </div>
 
     <div
-      ref="bottomBarEl"
-      class="ship-filters__bottom-bar"
+      v-if="isFiltered"
+      class="filters-item__bottom-bar"
     >
-      <p class="ship-filters__bottom-bar-result">
-        Found: 0
+      <p class="filters-item__bottom-bar-result">
+        Found: {{ filteredVehicleList.length }}
       </p>
 
       <button
         v-show="isFiltersOpened"
         type="button"
-        class="ship-filters__bottom-bar-button"
+        class="filters-item__bottom-bar-button"
         @click="handleResetButtonClick"
       >
-        <CLoseIcon class="ship-filters__bottom-bar-button-icon" />
+        <CLoseIcon class="filters-item__bottom-bar-button-icon" />
         Reset
       </button>
     </div>
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { FilterType } from '@/types/Filter';
-import ShipFilter from '@/components/ShipFilter.vue';
+import ShipFilter from '@/components/filter/FilterMain.vue';
 import { computed, ref, watch } from 'vue';
 import CLoseIcon from '@/components/icons/CLoseIcon.vue';
 import { useMainStore } from '@/store/main';
@@ -51,16 +51,16 @@ const {
   vehicleList,
   isLoaded,
   filtersState,
+  filteredVehicleList,
+  isMobile,
+  isFiltered,
 } = storeToRefs(mainStore);
 
-const { isMobile } = storeToRefs(mainStore);
-
 const isFiltersOpened = ref<boolean>(false);
-const bottomBarEl = ref<HTMLElement | null>(null);
 
 const shipFiltersCLassList = computed(() => [
-  'ship-filters',
-  { 'ship-filters--is-active': isFiltersOpened.value },
+  'filters-item',
+  { 'filters-item--is-active': isFiltersOpened.value },
 ]);
 
 const handleFilterClick = () => {
@@ -99,10 +99,13 @@ const initFilterOptions = () => {
   });
 };
 
-const handleResetButtonClick = () => {
-  Object.keys(filtersState.value).forEach((key) => {
-    filtersState.value[key].values = [];
-  });
+const handleResetButtonClick = async () => {
+  mainStore.resetFilters();
+
+  // wait delete options animation
+  setTimeout(() => {
+    isFiltersOpened.value = false;
+  }, 600);
 };
 
 watch(isLoaded, () => {
@@ -111,14 +114,14 @@ watch(isLoaded, () => {
 </script>
 
 <style lang="scss" scoped>
-.ship-filters {
+.filters-item {
   width: 100%;
   margin-top: 1rem;
   transition: background-color .3s;
 
   &__main {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: $grid-template-main;
     width: 100%;
   }
 
@@ -141,13 +144,13 @@ watch(isLoaded, () => {
   }
 
   &--is-active {
-    .ship-filters__item:not(:last-child) {
+    .filters-item__item:not(:last-child) {
       border-right: .034rem solid $color-white;
     }
 
     background-color: $color-dark;
 
-    .ship-filters__bottom-bar {
+    .filters-item__bottom-bar {
       border-top: .16rem solid $color-additional;
     }
   }

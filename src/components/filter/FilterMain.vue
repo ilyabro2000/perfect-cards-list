@@ -1,24 +1,24 @@
 <template>
   <div :class="shipFilterClassList">
-    <div class="ship-filter__top">
-      <div class="ship-filter__label">
+    <div class="filter-main__top">
+      <div class="filter-main__label">
         {{ label }}
       </div>
 
       <ArrowTop
         v-if="isOpened"
-        class="ship-filter__arrow"
+        class="filter-main__arrow"
       />
 
       <div
         v-else
-        class="ship-filter__values"
+        class="filter-main__values"
       >
         <template v-if="isNumber">
           <p
             v-for="value in values"
             :key="value"
-            class="ship-filter__value-number"
+            class="filter-main__value-number"
           >
             {{ value.name }}
           </p>
@@ -28,7 +28,7 @@
           <img
             v-for="value in values"
             :key="value.name"
-            class="ship-filter__value-image"
+            class="filter-main__value-image"
             :src="value?.icon ?? ''"
             :alt="value.name"
           >
@@ -39,7 +39,7 @@
     <transition name="fade">
       <ul
         v-if="isOpened"
-        class="ship-filter__selector"
+        class="filter-main__selector"
       >
         <FilterOption
           v-for="(option, index) in optionsData"
@@ -49,7 +49,7 @@
           :color="option.color ?? null"
           :icon="option.icons ?? null"
           :is-selected="isOptionSelected(option.name)"
-          class="ship-filter__option"
+          class="filter-main__option"
           @select="handleFilterSelect"
         >
           {{ option.name }}
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { FilterOption as FilterOptionType, FilterType, FilterValue } from '@/types/Filter';
 import { computed } from 'vue';
-import FilterOption from '@/components/FilterOption.vue';
+import FilterOption from '@/components/filter/FilterOption.vue';
 import ArrowTop from '@/components/icons/ArrowTop.vue';
 import { useMainStore } from '@/store/main';
 import { storeToRefs } from 'pinia';
@@ -76,16 +76,11 @@ const props = defineProps<{
   isOpened: boolean;
 }>();
 
-const values = computed({
-  get: () => filtersState.value[props.label].values,
-  set: () => {
-    filtersState.value[props.label].values = values.value;
-  },
-});
+const values = computed(() => filtersState.value[props.label].values);
 
 const shipFilterClassList = computed(() => [
-  'ship-filter',
-  { 'ship-filter--is-active': props.isOpened },
+  'filter-main',
+  { 'filter-main--is-active': props.isOpened },
 ]);
 
 const isNumber = computed(() => values.value?.every((item) => typeof item.name === 'number'));
@@ -124,23 +119,20 @@ const isOptionSelected = (option: FilterOptionType) => (
 );
 
 const handleFilterSelect = (value: FilterValue) => {
-  const isAlreadySelected = values.value.find((filterValue) => filterValue.name === value.name);
-
-  if (isAlreadySelected) {
-    values.value = values.value.filter((filterValue) => filterValue.name !== value.name);
-    return;
-  }
-
-  values.value?.push(value);
+  mainStore.setOption({
+    type: props.label,
+    value,
+  });
 };
 </script>
 
 <style lang="scss" scoped>
-.ship-filter {
+.filter-main {
   width: 100%;
   overflow-x: hidden;
 
   &__top {
+    position: relative;
     display: flex;
     align-items: center;
     gap: .8rem;
@@ -148,6 +140,18 @@ const handleFilterSelect = (value: FilterValue) => {
     height: 2.4rem;
     padding: 0.6rem 1rem;
     background-color: $color-additional;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba($color-additional, 0) 0%, $color-additional 100%);
+      z-index: 10;
+      transition-duration: .12s;
+    }
   }
 
   &__values {
@@ -162,7 +166,7 @@ const handleFilterSelect = (value: FilterValue) => {
     gap: .1rem;
     width: 100%;
     padding: 0 1.2rem;
-    margin-top: 1rem;
+    margin-top: .4rem;
     transition-duration: .12s;
     margin-bottom: 1.6rem;
   }
@@ -175,8 +179,12 @@ const handleFilterSelect = (value: FilterValue) => {
   }
 
   &--is-active {
-    .ship-filter__top {
+    .filter-main__top {
       background-color: transparent;
+
+      &::before {
+        background: transparent;
+      }
     }
   }
 
