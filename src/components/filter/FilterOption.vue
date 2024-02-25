@@ -90,6 +90,7 @@ const filterOptionClassList = computed(() => [
   width: 100%;
   height: 100%;
   cursor: pointer;
+  font-size: 1.6rem;
   transform: translate3d(0, 0, 0);
 
   @include hover {
@@ -134,9 +135,9 @@ const filterOptionClassList = computed(() => [
   }
 
   &__icon {
-    width: 2rem;
+    width: 3rem;
     height: auto;
-    max-height: 1.6rem;
+    max-height: 2.2rem;
   }
 
   &__icon,
@@ -148,13 +149,13 @@ const filterOptionClassList = computed(() => [
 
   &__status-wrapper {
     margin-left: auto;
-    width: 1rem;
-    height: 1rem;
+    width: 2rem;
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: .05rem solid $color-main;
+    border: .1rem solid $color-main;
     opacity: 0;
     transition: opacity .3s ease-in;
   }

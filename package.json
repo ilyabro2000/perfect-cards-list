@@ -10,13 +10,8 @@
     "stats": "vite build --mode=stats"
   },
   "dependencies": {
-    "gsap": "^3.12.5",
     "lodash.throttle": "^4.1.1",
     "pinia": "^2.1.7",
-    "rollup-plugin-visualizer": "^5.12.0",
-    "typograf": "^7.3.0",
-    "v-lazy-component": "^3.0.9",
-    "vanilla-tilt": "^1.8.1",
     "vue": "^3.4.19"
   },
   "browsersList": [

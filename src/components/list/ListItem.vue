@@ -53,6 +53,10 @@ defineProps<{
     border-bottom: .034rem solid rgba($color-gold, .4);
   }
 
+  @include layout-mobile {
+    font-size: 1rem;
+  }
+
   @include hover {
     background-color: rgba($color-gold, .7);
   }
@@ -61,15 +65,21 @@ defineProps<{
     display: flex;
     align-items: center;
     justify-content: space-around;
+
+    &:nth-child(1) {
+      @include layout-mobile {
+        width: 150%;
+      }
+    }
   }
 
   &__image {
-    width: 4rem;
+    width: 4.2rem;
     height: auto;
   }
 
   &__nation-image {
-    width: 2rem;
+    width: 3rem;
     height: auto;
   }
 

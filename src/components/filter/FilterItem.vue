@@ -1,24 +1,27 @@
 <template>
   <div :class="shipFilterClassList">
-    <div class="filter-main__top">
-      <div class="filter-main__label">
+    <div
+      class="filters-main__top"
+      @click="handleFilterClick"
+    >
+      <div class="filters-main__label">
         {{ label }}
       </div>
 
       <ArrowTop
         v-if="isOpened"
-        class="filter-main__arrow"
+        class="filters-main__arrow"
       />
 
       <div
         v-else
-        class="filter-main__values"
+        class="filters-main__values"
       >
         <template v-if="isNumber">
           <p
             v-for="value in values"
             :key="value"
-            class="filter-main__value-number"
+            class="filters-main__value-number"
           >
             {{ value.name }}
           </p>
@@ -28,7 +31,7 @@
           <img
             v-for="value in values"
             :key="value.name"
-            class="filter-main__value-image"
+            class="filters-main__value-image"
             :src="value?.icon ?? ''"
             :alt="value.name"
           >
@@ -39,7 +42,7 @@
     <transition name="fade">
       <ul
         v-if="isOpened"
-        class="filter-main__selector"
+        class="filters-main__selector"
       >
         <FilterOption
           v-for="(option, index) in optionsData"
@@ -49,7 +52,7 @@
           :color="option.color ?? null"
           :icon="option.icons ?? null"
           :is-selected="isOptionSelected(option.name)"
-          class="filter-main__option"
+          class="filters-main__option"
           @select="handleFilterSelect"
         >
           {{ option.name }}
@@ -68,7 +71,7 @@ import { useMainStore } from '@/store/main';
 import { storeToRefs } from 'pinia';
 
 const mainStore = useMainStore();
-const { filtersState } = storeToRefs(mainStore);
+const { filtersState, isMobile, isFiltersOpened } = storeToRefs(mainStore);
 
 const props = defineProps<{
   label: FilterType;
@@ -79,8 +82,8 @@ const props = defineProps<{
 const values = computed(() => filtersState.value[props.label].values);
 
 const shipFilterClassList = computed(() => [
-  'filter-main',
-  { 'filter-main--is-active': props.isOpened },
+  'filters-main',
+  { 'filters-main--is-active': props.isOpened },
 ]);
 
 const isNumber = computed(() => values.value?.every((item) => typeof item.name === 'number'));
@@ -124,10 +127,16 @@ const handleFilterSelect = (value: FilterValue) => {
     value,
   });
 };
+
+const handleFilterClick = () => {
+  if (!isMobile.value) return;
+
+  isFiltersOpened.value = !isFiltersOpened.value;
+};
 </script>
 
 <style lang="scss" scoped>
-.filter-main {
+.filters-main {
   width: 100%;
   overflow-x: hidden;
 
@@ -137,9 +146,15 @@ const handleFilterSelect = (value: FilterValue) => {
     align-items: center;
     gap: .8rem;
     width: 100%;
-    height: 2.4rem;
+    height: 4rem;
     padding: 0.6rem 1rem;
     background-color: $color-additional;
+
+    @include layout-mobile {
+      padding: .6rem .8rem;
+      height: auto;
+      gap: 1rem;
+    }
 
     &::before {
       content: '';
@@ -157,7 +172,7 @@ const handleFilterSelect = (value: FilterValue) => {
   &__values {
     display: flex;
     align-items: center;
-    gap: .4rem;
+    gap: .8rem;
   }
 
   &__selector {
@@ -172,35 +187,48 @@ const handleFilterSelect = (value: FilterValue) => {
   }
 
   &__label {
-    font-size: .8rem;
+    font-size: 1.4rem;
     font-weight: 700;
     cursor: pointer;
     text-transform: uppercase;
+
+    @include layout-mobile {
+      font-size: 1.2rem;
+      width: 4rem;
+    }
   }
 
   &--is-active {
-    .filter-main__top {
+    .filters-main__top {
       background-color: transparent;
 
       &::before {
         background: transparent;
       }
+
+      @include layout-mobile {
+        padding: 1rem 2rem;
+      }
     }
   }
 
   &__value-image {
-    width: 2rem;
+    width: 2.6rem;
     height: auto;
-    max-height: 1.6rem;
+    max-height: 2.3rem;
   }
 
   &__value-number {
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 700;
+
+    @include layout-mobile {
+      font-size: 1.2rem;
+    }
   }
 
   &__arrow {
-    width: 1.6rem;
+    width: 2rem;
     height: auto;
     color: $color-white;
   }

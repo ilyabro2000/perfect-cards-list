@@ -69,7 +69,7 @@ const { isFiltered, filteredVehicleList } = storeToRefs(mainStore);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 3rem;
+    height: 4rem;
     padding: .5rem;
   }
 
@@ -84,12 +84,23 @@ const { isFiltered, filteredVehicleList } = storeToRefs(mainStore);
     &:not(:last-child) {
       border-right: .034rem solid rgba($color-gold, .4);
     }
+
+    @include layout-mobile {
+      &:nth-child(1) {
+        width: 150%;
+      }
+    }
   }
 
   &__tip {
     margin: 2rem 0;
     font-weight: 700;
     text-align: center;
+    font-size: 2rem;
+
+    @include layout-mobile {
+      margin-top: 4rem;
+    }
   }
 }
 </style>

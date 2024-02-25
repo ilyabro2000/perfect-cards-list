@@ -28,9 +28,9 @@ import CurveArrowIcon from '@/components/icons/CurveArrowIcon.vue';
 
   &__icon {
     position: absolute;
-    left: -3rem;
-    top: -1rem;
-    width: 2rem;
+    left: -4rem;
+    top: -2.5rem;
+    width: 3rem;
     height: auto;
   }
 
@@ -39,12 +39,12 @@ import CurveArrowIcon from '@/components/icons/CurveArrowIcon.vue';
   }
 
   &__title {
-    font-size: 1.4rem;
+    font-size: 2rem;
     font-weight: 700;
   }
 
   &__description {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 }
 </style>

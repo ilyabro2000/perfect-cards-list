@@ -5,6 +5,7 @@ export interface Store {
   isMobile: boolean;
   vehicleList: Vehicle[];
   filteredVehicleList: Vehicle[];
+  isFiltersOpened: boolean;
   filtersState: {
     [FilterType.LEVEL]: {
       options: FilterValue[];

@@ -3,34 +3,33 @@
     :class="shipFiltersCLassList"
     @mouseenter="handleFilterMouseEnter"
     @mouseleave="handleFilterMouseLeave"
-    @click="handleFilterClick"
   >
-    <div class="filters-item__main">
-      <ShipFilter
+    <div class="filter-item__main">
+      <FilterItem
         v-for="[label, filter] in Object.entries(filtersState)"
         :key="label"
         :label="label"
         :options="filter.options"
-        class="filters-item__item"
+        class="filter-item__item"
         :is-opened="isFiltersOpened"
       />
     </div>
 
     <div
       v-if="isFiltered"
-      class="filters-item__bottom-bar"
+      class="filter-item__bottom-bar"
     >
-      <p class="filters-item__bottom-bar-result">
+      <p class="filter-item__bottom-bar-result">
         Found: {{ filteredVehicleList.length }}
       </p>
 
       <button
-        v-show="isFiltersOpened"
+        v-show="isCancelButtinVisible"
         type="button"
-        class="filters-item__bottom-bar-button"
+        class="filter-item__bottom-bar-button"
         @click="handleResetButtonClick"
       >
-        <CLoseIcon class="filters-item__bottom-bar-button-icon" />
+        <CLoseIcon class="filter-item__bottom-bar-button-icon" />
         Reset
       </button>
     </div>
@@ -39,8 +38,8 @@
 
 <script setup lang="ts">
 import { FilterType } from '@/types/Filter';
-import ShipFilter from '@/components/filter/FilterMain.vue';
-import { computed, ref, watch } from 'vue';
+import FilterItem from '@/components/filter/FilterItem.vue';
+import { computed, watch } from 'vue';
 import CLoseIcon from '@/components/icons/CLoseIcon.vue';
 import { useMainStore } from '@/store/main';
 import { storeToRefs } from 'pinia';
@@ -54,20 +53,19 @@ const {
   filteredVehicleList,
   isMobile,
   isFiltered,
+  isFiltersOpened,
 } = storeToRefs(mainStore);
 
-const isFiltersOpened = ref<boolean>(false);
-
 const shipFiltersCLassList = computed(() => [
-  'filters-item',
-  { 'filters-item--is-active': isFiltersOpened.value },
+  'filter-item',
+  { 'filter-item--is-active': isFiltersOpened.value },
 ]);
 
-const handleFilterClick = () => {
-  if (!isMobile.value) return;
+const isCancelButtinVisible = computed(() => {
+  if (isMobile.value) return true;
 
-  isFiltersOpened.value = !isFiltersOpened.value;
-};
+  return isFiltersOpened.value;
+});
 
 const handleFilterMouseEnter = () => {
   if (isMobile.value) return;
@@ -114,15 +112,20 @@ watch(isLoaded, () => {
 </script>
 
 <style lang="scss" scoped>
-.filters-item {
+.filter-item {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 1.4rem;
   transition: background-color .3s;
 
   &__main {
     display: grid;
     grid-template-columns: $grid-template-main;
     width: 100%;
+
+    @include layout-mobile {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__item {
@@ -140,18 +143,36 @@ watch(isLoaded, () => {
 
     &:not(:last-child) {
       border-right: .034rem solid $color-main;
+
+      @include layout-mobile {
+        border-right: none;
+      }
     }
   }
 
   &--is-active {
-    .filters-item__item:not(:last-child) {
+    .filter-item__item:not(:last-child) {
       border-right: .034rem solid $color-white;
+
+      @include layout-mobile {
+        border-right: none;
+      }
     }
 
     background-color: $color-dark;
 
-    .filters-item__bottom-bar {
+    .filter-item__bottom-bar {
       border-top: .16rem solid $color-additional;
+    }
+  }
+
+  @include  layout-mobile {
+    .filter-item__item {
+      border: none;
+    }
+
+    .filter-item__bottom-bar {
+      border-top: .22rem solid $color-additional;
     }
   }
 
@@ -163,13 +184,13 @@ watch(isLoaded, () => {
     padding: 0.6rem 1rem;
     background-color: $color-dark;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 1.4rem;
 
     &-button {
       display: flex;
       align-items: center;
       background-color: transparent;
-      font-size: .8rem;
+      font-size: 1.2rem;
       gap: .2rem;
       text-transform: uppercase;
       color: $color-white;
@@ -182,8 +203,12 @@ watch(isLoaded, () => {
         opacity: 1;
       }
 
+      @include layout-mobile {
+        opacity: 1;
+      }
+
       &-icon {
-        width: .8rem;
+        width: 1.2rem;
         height: auto;
         color: $color-white;
       }

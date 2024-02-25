@@ -11,6 +11,7 @@ export const useMainStore: Store = defineStore('main', {
 
     vehicleList: [],
     filteredVehicleList: [],
+    isFiltersOpened: false,
 
     filtersState: {
       [FilterType.LEVEL]: {
