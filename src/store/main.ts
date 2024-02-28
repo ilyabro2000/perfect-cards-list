@@ -3,6 +3,7 @@ import { Store } from '@/types/Store';
 import observeWindowSize from '@/utils/observeWindowSize';
 import { getVehicles } from '@/services/api';
 import { FilterType, FilterValue } from '@/types/Filter';
+import { Vehicle } from '@/types/Vehicle';
 
 export const useMainStore: Store = defineStore('main', {
   state: () => ({
@@ -10,7 +11,6 @@ export const useMainStore: Store = defineStore('main', {
     isLoaded: false,
 
     vehicleList: [],
-    filteredVehicleList: [],
     isFiltersOpened: false,
 
     filtersState: {
@@ -29,18 +29,18 @@ export const useMainStore: Store = defineStore('main', {
     },
   }),
   getters: {
-    isMobile: (state: Store) => state.windowWidth < 729,
+    isMobile: (state: Store): boolean => state.windowWidth < 729,
 
-    isFiltered({ filtersState }) {
+    isFiltered({ filtersState }): boolean {
       return Object.values(filtersState).some(({ values }) => values.length);
     },
 
-    filteredVehicleList({ vehicleList, filtersState }) {
-      if (!this.isFiltered) {
+    filteredVehicleList({ vehicleList, filtersState, isFiltered }): Vehicle[] {
+      if (!isFiltered) {
         return [];
       }
 
-      return vehicleList.filter((vehicle) => (!filtersState.type.values.length
+      return vehicleList.filter((vehicle: Vehicle) => (!filtersState.type.values.length
               || filtersState.type.values.some(({ name }) => vehicle.type.name === name))
           && (!filtersState.level.values.length
               || filtersState.level.values.some(({ name }) => vehicle.level === name))
@@ -61,7 +61,7 @@ export const useMainStore: Store = defineStore('main', {
     },
 
     setOption({ type, value }: { type: FilterType; value: FilterValue }) {
-      const filterValues = this.filtersState[type].values;
+      const filterValues = this.filtersState[type]?.values || [];
       const isAlreadySelected = filterValues.find(({ name }) => name === value.name);
 
       if (isAlreadySelected) {
@@ -72,7 +72,7 @@ export const useMainStore: Store = defineStore('main', {
     },
 
     resetFilters() {
-      Object.keys(this.filtersState).forEach((key) => {
+      Object.keys(this.filtersState).forEach((key: string) => {
         this.filtersState[key].values = [];
       });
     },
